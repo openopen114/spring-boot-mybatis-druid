@@ -19,9 +19,9 @@ RUN mvn clean package -Pdev  -DskipTests
 FROM adoptopenjdk/openjdk11:alpine-jre
 
 # Copy the jar to the production image from the builder stage.
-# ========== spring-boot-cron-job ==========
-COPY --from=builder /app/target/spring-boot-cron-job.war /spring-boot-cron-job.war
+# ========== spring-boot-mybatis-druid ==========
+COPY --from=builder /app/target/spring-boot-mybatis-druid.war /spring-boot-mybatis-druid.war
 
 # Run the web service on container startup.
-# ========== spring-boot-cron-job ==========
-CMD ["java",  "-jar", "/spring-boot-cron-job.war"]
+# ========== spring-boot-mybatis-druid ==========
+CMD ["java",  "-jar", "/spring-boot-mybatis-druid.war"]

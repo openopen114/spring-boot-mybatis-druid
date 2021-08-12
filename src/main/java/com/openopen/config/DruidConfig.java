@@ -72,36 +72,47 @@ public class DruidConfig {
     @Value("{spring.datasource.connectionProperties}")
     private String connectionProperties;
 
+
+    @Value("${APIENV}")
+    private String APIENV;
+
     @Bean     //声明其为Bean实例
     @Primary  //在同样的DataSource中，首先使用被标注的DataSource
     public DruidDataSource dataSource(){
-        DruidDataSource datasource = new DruidDataSource();
+        DruidDataSource pool = new DruidDataSource();
 
-        datasource.setUrl(this.dbUrl);
-        datasource.setUsername(username);
-        datasource.setPassword(password);
-        datasource.setDriverClassName(driverClassName);
+        pool.setUrl(this.dbUrl);
+        pool.setUsername(username);
+        pool.setPassword(password);
+        pool.setDriverClassName(driverClassName);
 
         //configuration
-        datasource.setInitialSize(initialSize);
-        datasource.setMinIdle(minIdle);
-        datasource.setMaxActive(maxActive);
-        datasource.setMaxWait(maxWait);
-        datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
-        datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
-        datasource.setValidationQuery(validationQuery);
-        datasource.setTestWhileIdle(testWhileIdle);
-        datasource.setTestOnBorrow(testOnBorrow);
-        datasource.setTestOnReturn(testOnReturn);
-        datasource.setPoolPreparedStatements(poolPreparedStatements);
-        datasource.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
+        pool.setInitialSize(initialSize);
+        pool.setMinIdle(minIdle);
+        pool.setMaxActive(maxActive);
+        pool.setMaxWait(maxWait);
+        pool.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
+        pool.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
+        pool.setValidationQuery(validationQuery);
+        pool.setTestWhileIdle(testWhileIdle);
+        pool.setTestOnBorrow(testOnBorrow);
+        pool.setTestOnReturn(testOnReturn);
+        pool.setPoolPreparedStatements(poolPreparedStatements);
+        pool.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
         try {
-            datasource.setFilters(filters);
+            pool.setFilters(filters);
         } catch (SQLException e) {
             logger.error("druid configuration initialization filter", e);
         }
-        datasource.setConnectionProperties(connectionProperties);
+        pool.setConnectionProperties(connectionProperties);
 
-        return datasource;
+        logger.info("");
+        logger.info("===========================================");
+        logger.info("=============== APIENV: " + APIENV + " ===============");
+        logger.info("===========================================");
+        logger.info("");
+
+
+        return pool;
     }
 }

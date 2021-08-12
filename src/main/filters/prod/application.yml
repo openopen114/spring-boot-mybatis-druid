@@ -1,3 +1,5 @@
+#APIENV
+APIENV: prod
 #配置mysql
 spring:
   datasource:

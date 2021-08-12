@@ -1,0 +1,33 @@
+#APIENV
+APIENV: dev
+#配置mysql
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+    #Druid连接池配置
+    initialSize: 1
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT NOW()
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,slf4j
+    connectionProperties.druid.stat.mergeSql: true;
+    connectionProperties.druid.stat.slowSqlMillis: 5000
+#Mybatis
+mybatis:
+  #加载mybatis主要配置类
+  config-location: classpath:mybatis/mybatis-config.xml
+  #加载mapper配置类
+  mapper-locations: classpath:mapper/*.xml
+  #加载mapper实体类
+  type-aliases-package: com.openopen.model

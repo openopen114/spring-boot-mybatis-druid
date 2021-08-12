@@ -115,6 +115,11 @@
         <!-- 3. Properties Filter -->
         <filters>
             <filter>src/main/filters/${api.env}/DB.properties</filter>
+            <filter>src/main/filters/${api.env}/application.yml</filter>
+
+
+
+
         </filters>
 
 
