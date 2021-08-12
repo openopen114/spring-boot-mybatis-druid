@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 import java.sql.SQLException;
-
+import java.util.Properties;
 
 
 @Configuration
@@ -72,18 +72,33 @@ public class DruidConfig {
     @Value("{spring.datasource.connectionProperties}")
     private String connectionProperties;
 
+    @Value("${spring.datasource.connectionProperties.druid.stat.mergeSql}")
+    private String mergeSql;
+
+
+    @Value("${spring.datasource.connectionProperties.druid.stat.slowSqlMillis}")
+    private String slowSqlMillis;
+
+
+
+
 
     @Value("${APIENV}")
     private String APIENV;
+
+    @Value("${gcloud.sql.socketFactory}")
+    private String socketFactory;
+
+
+    @Value("${gcloud.sql.cloudSqlInstance}")
+    private String cloudSqlInstance;
 
     @Bean     //声明其为Bean实例
     @Primary  //在同样的DataSource中，首先使用被标注的DataSource
     public DruidDataSource dataSource(){
         DruidDataSource pool = new DruidDataSource();
 
-        pool.setUrl(this.dbUrl);
-        pool.setUsername(username);
-        pool.setPassword(password);
+
         pool.setDriverClassName(driverClassName);
 
         //configuration
@@ -104,13 +119,51 @@ public class DruidConfig {
         } catch (SQLException e) {
             logger.error("druid configuration initialization filter", e);
         }
-        pool.setConnectionProperties(connectionProperties);
+
+
+        logger.info("===> connectionProperties");
+        logger.info(connectionProperties);
+
+
+
+        Properties connProps = new Properties();
+
+
+        if(APIENV.equals("dev")) {
+            //開發環境
+            pool.setUrl(this.dbUrl);
+            pool.setUsername(username);
+            pool.setPassword(password);
+        }else {
+            //cloud 環境
+            pool.setUrl(this.dbUrl);
+            connProps.setProperty("user",username);
+            connProps.setProperty("password",password);
+            connProps.setProperty("sslmode", "disable");
+            connProps.setProperty("socketFactory", socketFactory);
+            connProps.setProperty("cloudSqlInstance", cloudSqlInstance);
+            connProps.setProperty("connectTimeout","60");
+            connProps.setProperty("socketTimeout", "60");
+            connProps.setProperty("loginTimeout", "60");
+
+
+        }
+
+        connProps.setProperty("mergeSql", "60");
+        connProps.setProperty("slowSqlMillis", "60");
+        pool.setConnectProperties(connProps);
+
+
+
 
         logger.info("");
         logger.info("===========================================");
         logger.info("=============== APIENV: " + APIENV + " ===============");
         logger.info("===========================================");
         logger.info("");
+
+        logger.info("==> db url: " + dbUrl);
+        logger.info("connectionProperties:" + connectionProperties);
 
 
         return pool;
