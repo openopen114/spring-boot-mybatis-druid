@@ -22,7 +22,7 @@ public class App {
   @Value("${APIENV}")
   private   String APIENV;
 
-  @Autowired private PersonService personService;
+
 
   @RequestMapping(value = "/")
   String hello() {
@@ -35,13 +35,13 @@ public class App {
     return APIENV;
   }
 
-  @RequestMapping(
-      value = "/person",
-      method = RequestMethod.GET,
-      produces = {"application/json"})
-  public Person getPerson() {
-    return personService.getPerson();
-  }
+//  @RequestMapping(
+//      value = "/person",
+//      method = RequestMethod.GET,
+//      produces = {"application/json"})
+//  public Person getPerson() {
+//    return personService.getPerson();
+//  }
 
   public static void main(String[] args) {
 
