@@ -1,5 +1,5 @@
 #APIENV
-APIENV: dev
+APIENV: tst
 #配置mysql
 spring:
   datasource:

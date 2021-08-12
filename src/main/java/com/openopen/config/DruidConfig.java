@@ -126,8 +126,6 @@ public class DruidConfig {
 
 
 
-        Properties connProps = new Properties();
-
 
         if(APIENV.equals("dev")) {
             //開發環境
@@ -136,24 +134,21 @@ public class DruidConfig {
             pool.setPassword(password);
         }else {
             //cloud 環境
-            pool.setUrl(this.dbUrl);
-            connProps.setProperty("user",username);
-            connProps.setProperty("password",password);
+            Properties connProps = new Properties();
+            connProps.setProperty("user", username);
+            connProps.setProperty("password", password);
             connProps.setProperty("sslmode", "disable");
             connProps.setProperty("socketFactory", socketFactory);
             connProps.setProperty("cloudSqlInstance", cloudSqlInstance);
             connProps.setProperty("connectTimeout","60");
             connProps.setProperty("socketTimeout", "60");
             connProps.setProperty("loginTimeout", "60");
-
-
+            pool.setUrl(this.dbUrl);
+            pool.setConnectProperties(connProps);
         }
 
-        connProps.setProperty("mergeSql", "60");
-        connProps.setProperty("slowSqlMillis", "60");
-        pool.setConnectProperties(connProps);
 
-
+   
 
 
         logger.info("");
@@ -164,6 +159,10 @@ public class DruidConfig {
 
         logger.info("==> db url: " + dbUrl);
         logger.info("connectionProperties:" + connectionProperties);
+        logger.info("socketFactory==>"+socketFactory);
+        logger.info("cloudSqlInstance===>"+cloudSqlInstance);
+        logger.info("username:"+username);
+        logger.info("password:"+password);
 
 
         return pool;
