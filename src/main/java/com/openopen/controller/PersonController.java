@@ -27,6 +27,7 @@ public class PersonController {
    * 查詢 Person By ID
    *
    * */
+  //http://localhost:8080/api/person/id/9
   @RequestMapping(
       value = "/person/id/{_id}",
       method = RequestMethod.GET,
@@ -42,6 +43,7 @@ public class PersonController {
    * 新增 Person
    *
    * */
+  //http://localhost:8080/api/add/person
   @PostMapping(
       value = "/add/person",
       produces = {"application/json"})

@@ -41,7 +41,7 @@ public class PersonService {
 
     for (Person _model : _list) {
       logger.info("===> " + _model.getId());
-      personMapper.insertSelective(_model);
+      personMapper.insertSelectiveWithTimestamp(_model);
     }
   }
 }

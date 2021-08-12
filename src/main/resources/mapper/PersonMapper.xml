@@ -114,4 +114,52 @@
         date_with_tz = #{dateWithTz,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=VARCHAR}
     </update>
+
+
+    <!-- 插入時間   -->
+    <insert id="insertSelectiveWithTimestamp" parameterType="com.openopen.model.Person">
+        insert into person
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="age != null">
+                age,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="weight != null">
+                weight,
+            </if>
+
+                date_no_tz,
+
+
+                date_with_tz,
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="age != null">
+                #{age,jdbcType=INTEGER},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=NUMERIC},
+            </if>
+            NOW(),
+            NOW(),
+        </trim>
+    </insert>
 </mapper>

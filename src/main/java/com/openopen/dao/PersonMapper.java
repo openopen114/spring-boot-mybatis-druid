@@ -16,4 +16,8 @@ public interface PersonMapper {
     int updateByPrimaryKeySelective(Person record);
 
     int updateByPrimaryKey(Person record);
+
+    int insertSelectiveWithTimestamp(Person record);
+
+
 }
