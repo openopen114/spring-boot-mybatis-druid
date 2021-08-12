@@ -19,5 +19,8 @@ public interface PersonMapper {
 
     int insertSelectiveWithTimestamp(Person record);
 
+    // 設定時區  Asia/Taipei
+    void setTimezone();
+
 
 }

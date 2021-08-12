@@ -2,20 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.openopen.dao.PersonMapper">
     <resultMap id="BaseResultMap" type="com.openopen.model.Person">
-        <id column="id" jdbcType="VARCHAR" property="id" />
-        <result column="name" jdbcType="VARCHAR" property="name" />
-        <result column="age" jdbcType="INTEGER" property="age" />
-        <result column="address" jdbcType="VARCHAR" property="address" />
-        <result column="weight" jdbcType="NUMERIC" property="weight" />
-        <result column="date_no_tz" jdbcType="TIMESTAMP" property="dateNoTz" />
-        <result column="date_with_tz" jdbcType="TIMESTAMP" property="dateWithTz" />
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="age" jdbcType="INTEGER" property="age"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="weight" jdbcType="NUMERIC" property="weight"/>
+        <result column="date_no_tz" jdbcType="TIMESTAMP" property="dateNoTz"/>
+        <result column="date_with_tz" jdbcType="TIMESTAMP" property="dateWithTz"/>
     </resultMap>
     <sql id="Base_Column_List">
         id, name, age, address, weight, date_no_tz, date_with_tz
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from person
         where id = #{id,jdbcType=VARCHAR}
     </select>
@@ -136,10 +136,10 @@
                 weight,
             </if>
 
-                date_no_tz,
+            date_no_tz,
 
 
-                date_with_tz,
+            date_with_tz,
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -162,4 +162,10 @@
             NOW(),
         </trim>
     </insert>
+
+
+    <!--    設定時區  Asia/Taipei -->
+    <update id="setTimezone">
+        SET timezone to 'Asia/Taipei'
+    </update>
 </mapper>

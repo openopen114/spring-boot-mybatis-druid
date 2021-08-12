@@ -15,33 +15,38 @@ import java.util.List;
 @Service
 public class PersonService {
 
-  // Logger
-  private Logger logger = LoggerFactory.getLogger(PersonService.class);
 
-  // Autowired Mapper
-  @Autowired private PersonMapper personMapper;
+    // Logger
+    private Logger logger = LoggerFactory.getLogger(PersonService.class);
 
-  /*
-   *
-   * 查詢 Person By ID
-   *
-   * */
-  public Person getPersonById(String _id) {
-    logger.info("==> getPersonById ");
-    return personMapper.selectByPrimaryKey(_id);
-  }
+    // Autowired Mapper
+    @Autowired
+    private PersonMapper personMapper;
 
-  /*
-   *
-   * 新增 Person
-   *
-   * */
-  public void insertPersonByList(List<Person> _list) {
-    logger.info("==> insertPersonByList ");
-
-    for (Person _model : _list) {
-      logger.info("===> " + _model.getId());
-      personMapper.insertSelectiveWithTimestamp(_model);
+    /*
+     *
+     * 查詢 Person By ID
+     *
+     * */
+    public Person getPersonById(String _id) {
+        logger.info("==> getPersonById ");
+        return personMapper.selectByPrimaryKey(_id);
     }
-  }
+
+    /*
+     *
+     * 新增 Person
+     *
+     * */
+    public void insertPersonByList(List<Person> _list) {
+        logger.info("==> insertPersonByList ");
+
+        // 設定時區  Asia/Taipei
+        personMapper.setTimezone();
+
+        for (Person _model : _list) {
+            logger.info("===> " + _model.getId());
+            personMapper.insertSelectiveWithTimestamp(_model);
+        }
+    }
 }
