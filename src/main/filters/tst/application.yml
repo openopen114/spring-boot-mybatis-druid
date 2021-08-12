@@ -32,6 +32,7 @@ mybatis:
   #加载mapper实体类
   type-aliases-package: com.openopen.model
 
-  #Google Cloud SQL gcloud.sql.socketFactory
-  gcloud.sql.socketFactory: com.google.cloud.sql.postgres.SocketFactory
-  gcloud.sql.cloudSqlInstance: madou-goole-sheet-std-c19:asia-east1:my-tst-postgres-002
+#Google Cloud SQL gcloud.sql.socketFactory
+gcloud.sql.socketFactory: com.google.cloud.sql.postgres.SocketFactory
+gcloud.sql.cloudSqlInstance: madou-goole-sheet-std-c19:asia-east1:my-tst-postgres-002
+

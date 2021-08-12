@@ -35,3 +35,4 @@ mybatis:
 #Google Cloud SQL gcloud.sql.socketFactory
 gcloud.sql.socketFactory: com.google.cloud.sql.postgres.SocketFactory
 gcloud.sql.cloudSqlInstance: madou-goole-sheet-std-c19:asia-east1:my-tst-postgres-002
+
