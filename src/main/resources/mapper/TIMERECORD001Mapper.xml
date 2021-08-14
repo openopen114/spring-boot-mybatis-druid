@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.openopen.dao.TIMERECORD001Mapper">
+    <resultMap id="BaseResultMap" type="com.openopen.model.TIMERECORD001">
+        <id column="serial_no" jdbcType="INTEGER" property="serialNo" />
+        <result column="ac" jdbcType="INTEGER" property="ac" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="notes" jdbcType="VARCHAR" property="notes" />
+        <result column="user_create" jdbcType="VARCHAR" property="userCreate" />
+        <result column="user_update" jdbcType="VARCHAR" property="userUpdate" />
+        <result column="date_create" jdbcType="TIMESTAMP" property="dateCreate" />
+        <result column="date_update" jdbcType="TIMESTAMP" property="dateUpdate" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        serial_no, ac, status, notes, user_create, user_update, date_create, date_update
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from timerecord001
+        where serial_no = #{serialNo,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from timerecord001
+        where serial_no = #{serialNo,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.openopen.model.TIMERECORD001">
+        insert into timerecord001 (serial_no, ac, status,
+        notes, user_create, user_update,
+        date_create, date_update)
+        values (#{serialNo,jdbcType=INTEGER}, #{ac,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR},
+        #{notes,jdbcType=VARCHAR}, #{userCreate,jdbcType=VARCHAR}, #{userUpdate,jdbcType=VARCHAR},
+        #{dateCreate,jdbcType=TIMESTAMP}, #{dateUpdate,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.openopen.model.TIMERECORD001">
+        insert into timerecord001
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="serialNo != null">
+                serial_no,
+            </if>
+            <if test="ac != null">
+                ac,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="notes != null">
+                notes,
+            </if>
+            <if test="userCreate != null">
+                user_create,
+            </if>
+            <if test="userUpdate != null">
+                user_update,
+            </if>
+
+            <if test="dateUpdate != null">
+                date_update,
+            </if>
+            date_create,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="serialNo != null">
+                #{serialNo,jdbcType=INTEGER},
+            </if>
+            <if test="ac != null">
+                #{ac,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="userCreate != null">
+                #{userCreate,jdbcType=VARCHAR},
+            </if>
+            <if test="userUpdate != null">
+                #{userUpdate,jdbcType=VARCHAR},
+            </if>
+
+            <if test="dateUpdate != null">
+                #{dateUpdate,jdbcType=TIMESTAMP},
+            </if>
+            NOW(),
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.openopen.model.TIMERECORD001">
+        update timerecord001
+        <set>
+            <if test="ac != null">
+                ac = #{ac,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="userCreate != null">
+                user_create = #{userCreate,jdbcType=VARCHAR},
+            </if>
+            <if test="userUpdate != null">
+                user_update = #{userUpdate,jdbcType=VARCHAR},
+            </if>
+            <if test="dateCreate != null">
+                date_create = #{dateCreate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dateUpdate != null">
+                date_update = #{dateUpdate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where serial_no = #{serialNo,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.openopen.model.TIMERECORD001">
+        update timerecord001
+        set ac = #{ac,jdbcType=INTEGER},
+        status = #{status,jdbcType=VARCHAR},
+        notes = #{notes,jdbcType=VARCHAR},
+        user_create = #{userCreate,jdbcType=VARCHAR},
+        user_update = #{userUpdate,jdbcType=VARCHAR},
+        date_create = #{dateCreate,jdbcType=TIMESTAMP},
+        date_update = #{dateUpdate,jdbcType=TIMESTAMP}
+        where serial_no = #{serialNo,jdbcType=INTEGER}
+    </update>
+</mapper>
