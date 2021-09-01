@@ -15,8 +15,8 @@ import com.google.api.services.drive.DriveScopes;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +78,7 @@ google.service.account.key: classpath:secret/service.json
         System.out.println("===> System.getProperty(user.dir) : " + System.getProperty("user.dir"));
         System.out.println("===> path: " + DATA_STORE_DIR.getPath());
 
-        FileInputStream fileInputStream = new FileInputStream(getJarPath() + "/client_secret.json");
+        InputStream fileInputStream = GoogleDriveManager.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
                 new InputStreamReader(fileInputStream));
 
