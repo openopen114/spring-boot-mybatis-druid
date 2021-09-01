@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.openopen</groupId>
@@ -101,8 +102,8 @@
                         <configuration>
                             <target>
                                 <zip destfile="${project.build.directory}/app.zip">
-                                    <zipfileset dir="${project.build.directory}/docker" />
-                                    <zipfileset dir="${project.build.directory}" includes="${project.artifactId}.jar" />
+                                    <zipfileset dir="${project.build.directory}/docker"/>
+                                    <zipfileset dir="${project.build.directory}" includes="${project.artifactId}.jar"/>
                                 </zip>
                             </target>
                         </configuration>
@@ -116,8 +117,6 @@
         <filters>
             <filter>src/main/filters/${api.env}/DB.properties</filter>
             <filter>src/main/filters/${api.env}/application.yml</filter>
-
-
 
 
         </filters>
@@ -141,9 +140,7 @@
         </resources>
 
 
-
     </build>
-
 
 
     <!-- 5. profiles -->
@@ -175,7 +172,6 @@
             </properties>
         </profile>
     </profiles>
-
 
 
     <dependencies>
@@ -273,8 +269,6 @@
         </dependency>
 
 
-
-
         <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -298,7 +292,6 @@
         </dependency>
 
 
-
         <!-- === basic dependency === -->
 
 
@@ -311,12 +304,41 @@
         </dependency>
 
 
+        <!-- ◢◤◢◤◢◤◢◤◢◤  google drive api ◢◤◢◤◢◤◢◤◢◤   -->
+        <!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.32.1</version>
+        </dependency>
 
+
+        <!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-drive -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-drive</artifactId>
+            <version>v3-rev197-1.25.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6 -->
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-java6</artifactId>
+            <version>1.32.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty -->
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>1.32.1</version>
+        </dependency>
+
+
+        <!--  ◢◤◢◤◢◤◢◤◢◤  google drive api ◢◤◢◤◢◤◢◤◢◤   -->
 
 
     </dependencies>
-
-
 
 
 </project>
