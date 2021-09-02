@@ -12,7 +12,6 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import lombok.Getter;
-import net.coobird.thumbnailator.Thumbnails;
 import net.sf.jmimemagic.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -25,10 +24,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -89,16 +84,16 @@ public class GoogleDriveManager {
 
 
     // 檢查上傳資料夾/縮圖資料夾是否存在
-    private Boolean isFolderChekced = false;
+    private static Boolean isFolderChekced = false;
 
     // 檢查上傳資料夾 日期
-    private String folderCheckedDate = null;
+    private static String folderCheckedDate = null;
 
     // 今天日期 Today id
-    private String todayFolderId = null;
+    private static String todayFolderId = null;
 
     // 縮圖目錄 id
-    private String thumbnailFolderId = null;
+    private static String thumbnailFolderId = null;
 
 
     public static final String APPLICATION_NAME = "Drive API Java Quickstart";
@@ -197,29 +192,31 @@ public class GoogleDriveManager {
     public File createFile(String _parentId, InputStream _fileInputStream, String _fileName, String _mimeType)
             throws IOException {
 
-
+        logger.info("===>    createFile 0 ");
         // 取得 Google Drive Service if null
         if (this.googleDriveService == null) {
             this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
         }
 
+        logger.info("===>    createFile 1 ");
         //File Metadata
         File fileMetadata = new File();
 
         fileMetadata.setName(_fileName);
         fileMetadata.setMimeType(_mimeType);
+        logger.info("===>    createFile 2 ");
 
         if (_parentId != null && _parentId.length() > 0) {
             fileMetadata.setParents(Arrays.asList(_parentId));
         }
-
+        logger.info("===>    createFile 3 ");
 
         // File InputStream to  tempFile
         java.io.File tempFile = java.io.File.createTempFile("bbbb", ".jpeg");
         FileUtils.copyToFile(_fileInputStream, tempFile);
         FileContent mediaContent = new FileContent(_mimeType, tempFile);
 
-
+        logger.info("===>    createFile 4 ");
         // 新增檔案 回傳 id
         return this.googleDriveService.files().create(fileMetadata, mediaContent).setFields("id").execute();
     }
@@ -263,6 +260,7 @@ public class GoogleDriveManager {
 
 
         /* ◢◤◢◤◢◤◢◤◢◤ 4. 小圖 ◢◤◢◤◢◤◢◤◢◤ */
+        /*
         logger.info("===> 小圖 0 ");
         //縮小相片
         BufferedImage thumbnail_buf = Thumbnails.of(_fileInputStream2).size(150, 150).asBufferedImage();
@@ -271,15 +269,23 @@ public class GoogleDriveManager {
         InputStream thumbnailInputStream = new ByteArrayInputStream(thumbnail_os.toByteArray());
         logger.info("===> 小圖 1 ");
 
+         */
+
 
         // 原圖
+        logger.info("===> 原圖  createFile 0 ");
         File originalImageRes = this.createFile(todayFolderId, _fileInputStream, fileName, mimeType);
+        logger.info("===> 原圖  createFile 1 ");
 
         // 縮圖
+        /*
+        logger.info("===> 縮圖  createFile 0 ");
         File thumbnailImageRes = this.createFile(thumbnailFolderId, thumbnailInputStream, fileName, mimeType);
+        logger.info("===> 縮圖  createFile 1 ");
+        */
 
         logger.info("===> originalImageRes Id on Google Drive: " + originalImageRes.getId());
-        logger.info("===> thumbnailImageRes Id on Google Drive: " + thumbnailImageRes.getId());
+        //logger.info("===> thumbnailImageRes Id on Google Drive: " + thumbnailImageRes.getId());
     }
 
 
@@ -329,6 +335,10 @@ public class GoogleDriveManager {
         DateTime dateTime = new DateTime(timeZone);
         String todayFolderName = dateTime.toString("yyyy-MM-dd");
 
+        logger.info("folderCheckedDate:" + folderCheckedDate);
+        logger.info("todayFolderName:" + todayFolderName);
+        logger.info("!Objects.equals(folderCheckedDate, todayFolderName)" + !Objects.equals(folderCheckedDate, todayFolderName));
+
         if (!isFolderChekced || !Objects.equals(folderCheckedDate, todayFolderName)) {
             // 檢查日期不一樣
 
@@ -377,10 +387,14 @@ public class GoogleDriveManager {
             logger.info("===> 縮圖目錄 id :" + thumbnailFolderId);
 
 
-            if (!Objects.equals(todayFolderId, null) && !Objects.equals(thumbnailFolderId, null)) {
-                isFolderChekced = true;
-                folderCheckedDate = todayFolderName;
-            }
+            this.isFolderChekced = true;
+            this.folderCheckedDate = todayFolderName;
+
+
+            logger.info("===> !Objects.equals(todayFolderId, null)  :" + !Objects.equals(todayFolderId, null));
+            logger.info("===> !Objects.equals(thumbnailFolderId, null)  :" + !Objects.equals(thumbnailFolderId, null));
+            logger.info("===> isFolderChekced :" + isFolderChekced);
+            logger.info("===> folderCheckedDate :" + folderCheckedDate);
 
         }
 
