@@ -10,6 +10,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class GoogleDriveManager {
@@ -178,14 +180,37 @@ public class GoogleDriveManager {
 
     /*
      *
-     * 上傳檔案
+     * 上傳圖檔
      *
      * */
-    public void uploadFile() throws IOException, InterruptedException {
-//        File remoteFileFolder = this.createRemoteApkFolder(folderId);
-//        System.out.println("Remote Folder Id on Google Drive: " + remoteFileFolder.getId());
+    public void uploadImage() throws IOException, InterruptedException {
 
-//        Thread.sleep(2000);
+        // 取得資料夾目錄
+        Boolean isOnlyFolder = true;
+        FileList result = getFileList(GOOGLE_DRIVE_FOLDER_ID, isOnlyFolder);
+
+        // 檢查是否有縮圖目錄
+        String thumbnailFolderName = "thumbnail";
+        Boolean isThumbnailFolderExist = false;
+
+
+        // 縮圖目錄 id
+        String thumbnailFolderId = null;
+        for (File file : result.getFiles()) {
+            if (Objects.equals(file.getName(), thumbnailFolderName)) {
+                thumbnailFolderId = file.getId();
+                isThumbnailFolderExist = true;
+            }
+        }
+
+
+        // 縮圖目錄不存在則產生縮圖目錄
+        if (isThumbnailFolderExist == false) {
+            thumbnailFolderId = createFolder(GOOGLE_DRIVE_FOLDER_ID, thumbnailFolderName).getId();
+        }
+
+        System.out.println("===> 縮圖目錄 id :" + thumbnailFolderId);
+
 
         String fileName = "aaaa123";
 
@@ -193,5 +218,33 @@ public class GoogleDriveManager {
         File remoteFile = this.createFile(GOOGLE_DRIVE_FOLDER_ID, fileName, uploadingFileMimeType);
         System.out.println("Remote File Id on Google Drive: " + remoteFile.getId());
     }
+
+
+    /*
+     *
+     *
+     * 檔案清單
+     *
+     * */
+    public FileList getFileList(String _parentFolderId, Boolean isOnlyFolder) throws IOException {
+        System.out.println("===> file List");
+        // 取得 Google Drive Service
+        this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
+
+        String queryString = "'" + _parentFolderId + "'" + " in parents and trashed = false ";
+        if (isOnlyFolder) {
+            queryString = queryString + " and mimeType = 'application/vnd.google-apps.folder' ";
+        }
+
+        FileList result = this.googleDriveService.files().list()
+                .setQ(queryString)
+                .setSpaces("drive")
+                .execute();
+
+
+        return result;
+
+    }
+
 
 }

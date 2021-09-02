@@ -19,7 +19,8 @@ public class GoogleDriveController {
             method = RequestMethod.GET)
     public String aaaa() throws IOException, InterruptedException {
         GoogleDriveManager googleDriveManager = new GoogleDriveManager();
-        googleDriveManager.uploadFile();
+        googleDriveManager.uploadImage();
+
 
         return "OK";
     }
