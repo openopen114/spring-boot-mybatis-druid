@@ -28,12 +28,9 @@ public class GoogleDriveController {
     @RequestMapping(
             value = "/test",
             method = RequestMethod.GET)
-    public String aaaa() throws IOException, InterruptedException {
-//        GoogleDriveManager googleDriveManager = new GoogleDriveManager();
-//        googleDriveManager.uploadImage();
+    public String test() throws IOException, InterruptedException {
 
-
-        return "OK";
+        return "OK 123";
     }
 
 
