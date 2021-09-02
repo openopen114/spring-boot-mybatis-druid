@@ -38,9 +38,9 @@ gcloud.sql.cloudSqlInstance: madou-goole-sheet-std-c19:asia-east1:my-tst-postgre
 
 
 #Google Drive API
-google.secret.key.path: classpath:client_secret.json
-google.oauth.callback.uri: http://127.0.0.1.nip.io:8080/oauth
-google.credentials.folder.path: /Users/openopen/Desktop/credentials
-google.service.account.key: classpath:secret/service.json
+google.service.account.email: my-google0drive-service@crypto-eon-324701.iam.gserviceaccount.com
+google.service.account.json.path: /crypto-eon-324701-4bffd884f77c.json
+google.drive.folder.id: 18NwRWjS-ybEnLuVo6tBUVkVvCqK4O5B7
+
 
 
