@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -39,7 +40,17 @@ public class GoogleDriveManager {
 
 
     // Google Drive Service
-    private Drive googleDriveService;
+    public static Drive googleDriveService;
+
+    //用於在依賴關係注入完成之後需要執行的方法上，以執行任何初始化
+    @PostConstruct
+    public void init() throws IOException {
+        //授權驗證取得 google drive service
+        this.googleDriveService = this.getGoogleDriveService();
+
+        //檢查上傳資料夾/縮圖資料夾是否存在
+        this.checkFolderExist();
+    }
 
 
     //要上傳的 folder id (要先共用給服務帳戶)
@@ -70,6 +81,19 @@ public class GoogleDriveManager {
     private void setServiceAccountJsonPath(String _serviceAccountJsonPath) {
         SERVICE_ACCOUNT_JSON_PATH = _serviceAccountJsonPath;
     }
+
+
+    // 檢查上傳資料夾/縮圖資料夾是否存在
+    private Boolean isFolderChekced = false;
+
+    // 檢查上傳資料夾 日期
+    private String folderCheckedDate = null;
+
+    // 今天日期 Today id
+    private String todayFolderId = null;
+
+    // 縮圖目錄 id
+    private String thumbnailFolderId = null;
 
 
     public static final String APPLICATION_NAME = "Drive API Java Quickstart";
@@ -123,6 +147,7 @@ public class GoogleDriveManager {
      * */
     public static Drive getGoogleDriveService() throws IOException {
         Credential credential = authorize();
+        logger.info("===> authorize ok");
         return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
     }
 
@@ -135,8 +160,10 @@ public class GoogleDriveManager {
      * */
     public File createFolder(String _parentId, String _folderName) throws IOException {
 
-        // 取得 Google Drive Service
-        this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
+        // 取得 Google Drive Service if null
+        if (this.googleDriveService == null) {
+            this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
+        }
 
 
         //File MetaData
@@ -165,9 +192,11 @@ public class GoogleDriveManager {
     public File createFile(String _parentId, InputStream _fileInputStream, String _fileName, String _mimeType)
             throws IOException {
 
-        // 取得 Google Drive Service
-        this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
 
+        // 取得 Google Drive Service if null
+        if (this.googleDriveService == null) {
+            this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
+        }
 
         //File Metadata
         File fileMetadata = new File();
@@ -179,15 +208,11 @@ public class GoogleDriveManager {
             fileMetadata.setParents(Arrays.asList(_parentId));
         }
 
+
         // File InputStream to  tempFile
         java.io.File tempFile = java.io.File.createTempFile("bbbb", ".jpeg");
         FileUtils.copyToFile(_fileInputStream, tempFile);
         FileContent mediaContent = new FileContent(_mimeType, tempFile);
-
-        //java.io.File file = null;
-        //FileUtils.copyInputStreamToFile(_fileInputStream, file);
-        //java.io.File localFile = new java.io.File(buildFolderPath);
-        //FileContent mediaContent = new FileContent(_mimeType, localFile);
 
 
         // 新增檔案 回傳 id
@@ -202,83 +227,27 @@ public class GoogleDriveManager {
      * */
     public void uploadImage(InputStream _fileInputStream,
                             InputStream _fileInputStream2,
+                            InputStream _fileInputStream3,
                             MultipartFile _fileMetaData) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
 
 
+        /* ◢◤◢◤◢◤◢◤◢◤ 1. 檢查上傳資料夾/縮圖資料夾是否存在 ◢◤◢◤◢◤◢◤◢◤ */
+        checkFolderExist();
 
-        /* ◢◤◢◤◢◤◢◤◢◤ 1. 檢查是否有今天日期 Today 目錄 ◢◤◢◤◢◤◢◤◢◤ */
-
-
-        DateTimeZone timeZone = DateTimeZone.forID("Asia/Taipei");
-        DateTime dateTime = new DateTime(timeZone);
-        String todayFolderName = dateTime.toString("yyyy-MM-dd");
-
-        Boolean isOnlyFolder = true;
-        Boolean isTodayFolderExist = false;
-
-
-        // 今天日期 Today id
-        String todayFolderId = null;
-        FileList resultForToday = getFileList(GOOGLE_DRIVE_FOLDER_ID, isOnlyFolder);
-        for (File file : resultForToday.getFiles()) {
-            if (Objects.equals(file.getName(), todayFolderName)) {
-                todayFolderId = file.getId();
-                isTodayFolderExist = true;
-            }
-        }
-
-
-        // 今天日期 Today 目錄不存在則產生今天日期 Today 目錄
-        if (isTodayFolderExist == false) {
-            todayFolderId = createFolder(GOOGLE_DRIVE_FOLDER_ID, todayFolderName).getId();
-        }
-
-
-        /* ◢◤◢◤◢◤◢◤◢◤ 2. 檢查 今天日期 Today 目錄 下 是否有縮圖目錄 ◢◤◢◤◢◤◢◤◢◤ */
-        String thumbnailFolderName = "thumbnail";
-        Boolean isThumbnailFolderExist = false;
-
-
-        // 縮圖目錄 id
-        String thumbnailFolderId = null;
-        FileList resultForThumbnail = getFileList(todayFolderId, isOnlyFolder);
-        for (File file : resultForThumbnail.getFiles()) {
-            if (Objects.equals(file.getName(), thumbnailFolderName)) {
-                thumbnailFolderId = file.getId();
-                isThumbnailFolderExist = true;
-            }
-        }
-
-
-        // 縮圖目錄不存在則產生縮圖目錄
-        if (isThumbnailFolderExist == false) {
-            thumbnailFolderId = createFolder(todayFolderId, thumbnailFolderName).getId();
-        }
-
-        logger.info("===> Today目錄 id :" + todayFolderId);
-        logger.info("===> 縮圖目錄 id :" + thumbnailFolderId);
-
-
-        /* ◢◤◢◤◢◤◢◤◢◤ 3. 取的檔案名稱, mime type ◢◤◢◤◢◤◢◤◢◤ */
+        /* ◢◤◢◤◢◤◢◤◢◤ 2. 取的檔案名稱, mime type ◢◤◢◤◢◤◢◤◢◤ */
 
         logger.info("===> _fileMetaData.getOriginalFilename():" + _fileMetaData.getOriginalFilename());
 
         String fileName = _fileMetaData.getOriginalFilename();
 
-        MagicMatch fileMatchResult = Magic.getMagicMatch(IOUtils.toByteArray(_fileInputStream2));
+        MagicMatch fileMatchResult = Magic.getMagicMatch(IOUtils.toByteArray(_fileInputStream3));
         String mimeType = fileMatchResult.getMimeType();
         String fileExtension = fileMatchResult.getExtension();
         logger.info("===> mimeType:" + mimeType);
-        logger.info("===> fileExtension:" + fileExtension);
-
-
-//
-//        MagicMatch match = Magic.getMagicMatch(_fileInputStream, false, true);
-//        String contentType = match.getMimeType();
-//        System.out.println(contentType);
 
         File originalImageRes = this.createFile(todayFolderId, _fileInputStream, fileName, mimeType);
         File thumbnailImageRes = this.createFile(thumbnailFolderId, _fileInputStream2, fileName, mimeType);
+
         logger.info("===> originalImageRes Id on Google Drive: " + originalImageRes.getId());
         logger.info("===> thumbnailImageRes Id on Google Drive: " + thumbnailImageRes.getId());
     }
@@ -291,11 +260,18 @@ public class GoogleDriveManager {
      *
      * */
     public FileList getFileList(String _parentFolderId, Boolean isOnlyFolder) throws IOException {
-        logger.info("===> file List");
-        // 取得 Google Drive Service
-        this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
 
+        // 取得 Google Drive Service if null
+        if (this.googleDriveService == null) {
+            this.googleDriveService = GoogleDriveManager.getGoogleDriveService();
+        }
+
+
+        // 找特定資料夾
         String queryString = "'" + _parentFolderId + "'" + " in parents and trashed = false ";
+
+
+        // 只要資料夾清單
         if (isOnlyFolder) {
             queryString = queryString + " and mimeType = 'application/vnd.google-apps.folder' ";
         }
@@ -307,6 +283,79 @@ public class GoogleDriveManager {
 
 
         return result;
+
+    }
+
+
+    /*
+     *
+     *
+     * 檢查上傳資料夾/縮圖資料夾是否存在
+     *
+     * */
+    public void checkFolderExist() throws IOException {
+        logger.info("checkFolder 0");
+        DateTimeZone timeZone = DateTimeZone.forID("Asia/Taipei");
+        DateTime dateTime = new DateTime(timeZone);
+        String todayFolderName = dateTime.toString("yyyy-MM-dd");
+
+        if (!isFolderChekced || !Objects.equals(folderCheckedDate, todayFolderName)) {
+            // 檢查日期不一樣
+
+            /* ◢◤◢◤◢◤◢◤◢◤ 1. 檢查是否有今天日期 Today 目錄 ◢◤◢◤◢◤◢◤◢◤ */
+
+            Boolean isOnlyFolder = true;
+            Boolean isTodayFolderExist = false;
+
+
+            FileList resultForToday = getFileList(GOOGLE_DRIVE_FOLDER_ID, isOnlyFolder);
+
+            for (File file : resultForToday.getFiles()) {
+                if (Objects.equals(file.getName(), todayFolderName)) {
+                    // 已存在, 返回 id
+                    todayFolderId = file.getId();
+                    isTodayFolderExist = true;
+                }
+            }
+
+            // 今天日期 Today 目錄不存在則產生今天日期 Today 目錄
+            if (isTodayFolderExist == false) {
+                todayFolderId = createFolder(GOOGLE_DRIVE_FOLDER_ID, todayFolderName).getId();
+            }
+
+
+            /* ◢◤◢◤◢◤◢◤◢◤ 2. 檢查 今天日期 Today 目錄 下 是否有縮圖目錄 ◢◤◢◤◢◤◢◤◢◤ */
+            String thumbnailFolderName = "thumbnail";
+            Boolean isThumbnailFolderExist = false;
+
+
+            FileList resultForThumbnail = getFileList(todayFolderId, isOnlyFolder);
+            for (File file : resultForThumbnail.getFiles()) {
+                if (Objects.equals(file.getName(), thumbnailFolderName)) {
+                    // 已存在, 返回 id
+                    thumbnailFolderId = file.getId();
+                    isThumbnailFolderExist = true;
+                }
+            }
+
+            // 縮圖目錄不存在則產生縮圖目錄
+            if (isThumbnailFolderExist == false) {
+                thumbnailFolderId = createFolder(todayFolderId, thumbnailFolderName).getId();
+            }
+
+            logger.info("===> Today目錄 id :" + todayFolderId);
+            logger.info("===> 縮圖目錄 id :" + thumbnailFolderId);
+
+
+            if (!Objects.equals(todayFolderId, null) && !Objects.equals(thumbnailFolderId, null)) {
+                isFolderChekced = true;
+                folderCheckedDate = todayFolderName;
+            }
+
+        }
+
+        logger.info("checkFolder 1");
+
 
     }
 

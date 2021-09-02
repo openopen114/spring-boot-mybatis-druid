@@ -49,6 +49,7 @@ public class GoogleDriveController {
     @Transactional
     public String uploadImage(@RequestParam("file") MultipartFile fileInput,
                               @RequestParam("file") MultipartFile fileInput2,
+                              @RequestParam("file") MultipartFile fileInput3,
                               @RequestParam("file") MultipartFile fileMetaData,
                               @RequestParam("json") String _json) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
         logger.info("===> uploadImage");
@@ -56,6 +57,7 @@ public class GoogleDriveController {
 
         InputStream fileInputStream = fileInput.getInputStream();
         InputStream fileInputStream2 = fileInput2.getInputStream();
+        InputStream fileInputStream3 = fileInput3.getInputStream();
 
 
 //        Gson gson = new Gson();
@@ -65,7 +67,7 @@ public class GoogleDriveController {
         GoogleDriveManager googleDriveManager = new GoogleDriveManager();
 
 
-        googleDriveManager.uploadImage(fileInputStream, fileInputStream2, fileMetaData);
+        googleDriveManager.uploadImage(fileInputStream, fileInputStream2, fileInputStream3, fileMetaData);
 
         JsonObject obj = new JsonObject();
         obj.addProperty("ACTION", "uploadImage");
