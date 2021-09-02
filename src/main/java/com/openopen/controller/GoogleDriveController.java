@@ -1,27 +1,76 @@
 package com.openopen.controller;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.openopen.googledrive.GoogleDriveManager;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import net.sf.jmimemagic.MagicException;
+import net.sf.jmimemagic.MagicMatchNotFoundException;
+import net.sf.jmimemagic.MagicParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 
 @RestController
 @RequestMapping("/api/google/drive")
 public class GoogleDriveController {
 
+    // Logger
+    private Logger logger = LoggerFactory.getLogger(GoogleDriveController.class);
+
 
     @RequestMapping(
             value = "/test",
             method = RequestMethod.GET)
     public String aaaa() throws IOException, InterruptedException {
-        GoogleDriveManager googleDriveManager = new GoogleDriveManager();
-        googleDriveManager.uploadImage();
+//        GoogleDriveManager googleDriveManager = new GoogleDriveManager();
+//        googleDriveManager.uploadImage();
 
 
         return "OK";
+    }
+
+
+    /*
+     *
+     * 上傳圖片到 Google Drive
+     *
+     * */
+    //http://localhost:8080/api/google/drive/uploadImage
+    @PostMapping(
+            value = "/uploadImage",
+            produces = {"application/json"})
+    @Transactional
+    public String uploadImage(@RequestParam("file") MultipartFile fileInput,
+                              @RequestParam("file") MultipartFile fileInput2,
+                              @RequestParam("file") MultipartFile fileMetaData,
+                              @RequestParam("json") String _json) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
+        logger.info("===> uploadImage");
+        logger.info(_json);
+
+        InputStream fileInputStream = fileInput.getInputStream();
+        InputStream fileInputStream2 = fileInput2.getInputStream();
+
+
+//        Gson gson = new Gson();
+//        List<Person> list = gson.fromJson(_json, new TypeToken<List<Person>>() {
+//        }.getType());
+
+        GoogleDriveManager googleDriveManager = new GoogleDriveManager();
+
+
+        googleDriveManager.uploadImage(fileInputStream, fileInputStream2, fileMetaData);
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("ACTION", "uploadImage");
+        obj.addProperty("RESULT", "OK");
+
+        return new Gson().toJson(obj);
     }
 }
