@@ -117,7 +117,7 @@
         <filters>
             <filter>src/main/filters/${api.env}/DB.properties</filter>
             <filter>src/main/filters/${api.env}/application.yml</filter>
-            <filter>src/main/filters/${api.env}/client_secret.json</filter>
+            <filter>src/main/filters/${api.env}/crypto-eon-324701-4bffd884f77c.json</filter>
 
 
         </filters>

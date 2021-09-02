@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "crypto-eon-324701",
+  "private_key_id": "4bffd884f77c1bc516bace6b6c0ca643a04c3bf9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDZPsLTNBG96V6s\nTnEBPl1Z+6oegb07CFN22y6AxUELbTSbyA6SPxxg7Cn4vxdID1khmBSok9c9W8/L\n4JT4tRLnl2NJxGiWhVWIvpKZf5Fo1l63l/UAsMMJN6TmA8Pn+7uo9/0U89DbJhFl\nwpf9HT2cZ9uSnk4Z08GDxvE9MBlh4TuV3PLNy4DwO96TWcp3CZAMi0TvNAq6ZuSd\ncXwX/qFX+63RK1t63oVupkACwJBnZE0VAK7mYH7MJp1LNE1IFHd4E5r7cJ7emWTE\nsNigTBAjFGZhvnjc2XPHvX69oOALI98tsg9kqioLK3CtffP49gKcdZ1z9KEk4f0F\ncNACP1wvAgMBAAECggEAALXiKztTXNyjhkq8tzVTVtT/icQA222RNaVNMfdIhCy3\nlv7WKrJGzyZWk3gEhSQlCtAVg+D1O5UjnoC92/uznnWcny7OQhfDii6dX3UkWO8X\n4N/VWaA6XbsEhgq4caIddgBW9TeVlPHl7VWallBUgEDICLhjJwB4nza1A+82q17w\nqAVJ60jGW1/qfXUWR1ezxWhweZmmR0R2AJRSGgXzfmrqVs++oqiIkPOSNwV/VoT8\nf7ue/K72T3CTyUgITncP1+EEjyp1+RhJPBRh1rkEOqW5K92EwZGedK1jKt3jx1X9\newg4ByUIyIk+FjuOI6o1o53uUYVGbY40Px37aO/9eQKBgQD9jk0u9ZBSN0uA/keQ\nGuDrXlGOGZACfWep/yHs6qbMvpJSE4LgvSENJWio4mBT3qyLs1n7ii3qZyFY9Xi/\nNNRwctlmZPPuHCevEOryp3YwgFq9FLLLCIIkzCjEBg1beXmIjQEHyvmHzpemK6uL\nLJwmVHTharr87yJFd67VztO/TQKBgQDbVtsVkuxh5zHSMA1eE7ihwxM8KX+MhJMD\nOsoq1bDLAHAE4DIZHX0aJT6WBT+O7XTYzv6f4tPUz3TfYLLj4D9Cz6UtmaXuNGYr\nHPCYm9hR50LV/DJaHfInNrEuqypvmLW0j4hZLoSG4V+wD5Y+uzZ2Kw3zPEYLh2hd\nMR4c70KDawKBgCIN1Kvz6zg/mPJwNGhUU9UIy+dL452R/jREweex9EkXZ0uCt1c7\nz46WcaINFWbuRzpUEkfIXTZYN5BdF6SGkemwYyZvdJuMSIAow4VnnGYTNxyiBQlj\n0SbkDK2XKoAYpowCdBr51d25j4CP6PA+Q5KaUUBdN1P1QiMWWfL5XlMZAoGBAJ6H\nJStvmGeeWLToxBCVwmEwBAv8llJyU2sHJ61T60adl1j+zVa3qH6oIpb9ThW4bDZz\nTTc0ExSBqJ/2XPU0U6SvPVw66+HBf4JzlTVHlk6EDhto/t+BO066Sc9IKRClV9cb\n0llatLBj3ev7KAVI/DDmJ1wA2UNl57lLUc9p4jHnAoGATmYoRm1HvOQP8GhYJ9Dj\njDUIUebkHALtZpWkXdBLvuM1Uogz4NXokxjRipnD8fwsV2GKGhvzvENEyl27509H\nIwaWNTl2EjvuAjYZd9R4CUTqLEWT2F1XU77XbOm2Ai+5Z3smW8vBBClWx9Uc8qzy\nYrt01foM4+/PXhAApNkJY3Q=\n-----END PRIVATE KEY-----\n",
+  "client_email": "my-google0drive-service@crypto-eon-324701.iam.gserviceaccount.com",
+  "client_id": "117744574923412342660",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/my-google0drive-service%40crypto-eon-324701.iam.gserviceaccount.com"
+}

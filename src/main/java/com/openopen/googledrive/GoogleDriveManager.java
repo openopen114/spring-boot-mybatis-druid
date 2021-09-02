@@ -1,10 +1,7 @@
 package com.openopen.googledrive;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -16,8 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,15 +74,43 @@ google.service.account.key: classpath:secret/service.json
         System.out.println("===> System.getProperty(user.dir) : " + System.getProperty("user.dir"));
         System.out.println("===> path: " + DATA_STORE_DIR.getPath());
 
-        InputStream fileInputStream = GoogleDriveManager.class.getResourceAsStream("/client_secret.json");
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-                new InputStreamReader(fileInputStream));
 
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-                clientSecrets, SCOPES).setDataStoreFactory(DATA_STORE_FACTORY).setAccessType("offline").build();
+//        InputStream fileInputStream = GoogleDriveManager.class.getResourceAsStream("/crypto-eon-324701-4bffd884f77c.json");
+//        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+//                new InputStreamReader(fileInputStream));
+//
+//        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
+//                clientSecrets, SCOPES).setDataStoreFactory(DATA_STORE_FACTORY).setAccessType("offline").build();
+//
 
-        Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
-        System.out.println("===> Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+        GoogleCredential clientSecrets =
+                GoogleCredential.fromStream(GoogleDriveManager.class.getResourceAsStream("/crypto-eon-324701-4bffd884f77c.json"));
+        PrivateKey privateKey = clientSecrets.getServiceAccountPrivateKey();
+        String privateKeyId = clientSecrets.getServiceAccountPrivateKeyId();
+        System.out.println("privateKeyId:" + privateKeyId);
+
+
+        GoogleCredential credential = new GoogleCredential.Builder()
+                .setTransport(HTTP_TRANSPORT)
+                .setJsonFactory(JSON_FACTORY)
+                .setServiceAccountId("my-google0drive-service@crypto-eon-324701.iam.gserviceaccount.com")
+                .setServiceAccountScopes(SCOPES)
+                .setServiceAccountPrivateKey(privateKey)
+                .setServiceAccountPrivateKeyId(privateKeyId)
+                .build();
+
+//
+//        Credential credential = new Credential.Builder()
+//                .setTransport(HTTP_TRANSPORT)
+//                .setJsonFactory(JSON_FACTORY)
+//                .setServiceAccountId("my-google0drive-service@crypto-eon-324701.iam.gserviceaccount.com")
+//                .setServiceAccountUser("openopen114@gmail.com")
+//                .setServiceAccountProjectId("crypto-eon-324701")
+//                .setServiceAccountScopes(SCOPES)
+//                .build();
+
+        //Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+        //System.out.println("===> Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
 
         return credential;
     }
