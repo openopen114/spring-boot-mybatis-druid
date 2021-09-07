@@ -117,7 +117,7 @@
         <filters>
             <filter>src/main/filters/${api.env}/DB.properties</filter>
             <filter>src/main/filters/${api.env}/application.yml</filter>
-            <filter>src/main/filters/${api.env}/crypto-eon-324701-4bffd884f77c.json</filter>
+            <filter>src/main/filters/${api.env}/dev-my-project-28585-1b0bbaf3db2f.json</filter>
 
 
         </filters>
@@ -349,6 +349,14 @@
             <groupId>com.google.oauth-client</groupId>
             <artifactId>google-oauth-client-jetty</artifactId>
             <version>1.32.1</version>
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http -->
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>1.1.0</version>
         </dependency>
 
 
