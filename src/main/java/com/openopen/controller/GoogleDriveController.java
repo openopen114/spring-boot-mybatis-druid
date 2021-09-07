@@ -1,20 +1,14 @@
 package com.openopen.controller;
 
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.openopen.googledrive.GoogleDriveManager;
-import net.sf.jmimemagic.MagicException;
-import net.sf.jmimemagic.MagicMatchNotFoundException;
-import net.sf.jmimemagic.MagicParseException;
+import com.openopen.googledrive.GoogleDriveAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 
 @RestController
@@ -30,6 +24,9 @@ public class GoogleDriveController {
             method = RequestMethod.GET)
     public String test() throws IOException, InterruptedException {
 
+        GoogleDriveAction googleDriveAction = new GoogleDriveAction();
+        googleDriveAction.uploadImage();
+
         return "OK 123";
     }
 
@@ -40,6 +37,7 @@ public class GoogleDriveController {
      *
      * */
     //http://localhost:8080/api/google/drive/uploadImage
+    /*
     @PostMapping(
             value = "/uploadImage",
             produces = {"application/json"})
@@ -71,5 +69,5 @@ public class GoogleDriveController {
         obj.addProperty("RESULT", "OK");
 
         return new Gson().toJson(obj);
-    }
+    }*/
 }
