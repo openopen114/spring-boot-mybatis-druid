@@ -1,12 +1,14 @@
 package com.openopen.googledrive;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ImpersonatedCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import lombok.Getter;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
 import java.util.Arrays;
 import java.util.List;
 
@@ -75,14 +78,31 @@ public class GoogleDriveAuth {
         logger.info("===> authorize");
         logger.info("===> SERVICE_ACCOUNT_EMANIL:" + SERVICE_ACCOUNT_EMANIL);
         logger.info("===> SERVICE_ACCOUNT_JSON_PATH:" + SERVICE_ACCOUNT_JSON_PATH);
+//
+//        ServiceAccountCredentials serviceAccountCredentials = ServiceAccountCredentials.fromStream(GoogleDriveAuth.class.getResourceAsStream(SERVICE_ACCOUNT_JSON_PATH));
+//
+//        serviceAccountCredentials = (ServiceAccountCredentials) serviceAccountCredentials.createScoped(SCOPES);
+//
+//
+//        ImpersonatedCredentials credential = ImpersonatedCredentials.create(serviceAccountCredentials, SERVICE_ACCOUNT_EMANIL, null, SCOPES,
+//                300);
 
-        ServiceAccountCredentials serviceAccountCredentials = ServiceAccountCredentials.fromStream(GoogleDriveAuth.class.getResourceAsStream(SERVICE_ACCOUNT_JSON_PATH));
 
-        serviceAccountCredentials = (ServiceAccountCredentials) serviceAccountCredentials.createScoped(SCOPES);
+        logger.info("===> authorize");
+        logger.info("===> SERVICE_ACCOUNT_EMANIL:" + SERVICE_ACCOUNT_EMANIL);
+        logger.info("===> SERVICE_ACCOUNT_JSON_PATH:" + SERVICE_ACCOUNT_JSON_PATH);
+        GoogleCredentials clientSecrets =
+                GoogleCredentials.fromStream(GoogleDriveAuth.class.getResourceAsStream(SERVICE_ACCOUNT_JSON_PATH));
 
-        ImpersonatedCredentials credential = ImpersonatedCredentials.create(serviceAccountCredentials, SERVICE_ACCOUNT_EMANIL, null, SCOPES, 300);
 
-        return credential;
+//        GoogleCredentials credential = new GoogleCredentials(clientSecrets.getAccessToken())
+//
+//
+//                .setServiceAccountId(SERVICE_ACCOUNT_EMANIL)
+//                .setServiceAccountScopes(SCOPES)
+//                .build();
+
+        return null;
     }
 
 
@@ -92,11 +112,37 @@ public class GoogleDriveAuth {
      *
      * */
     public static Drive getGoogleDriveService() throws IOException {
-
+        /*
         ImpersonatedCredentials credential = authorize();
         logger.info("===> authorize ok");
-        
+
         return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpCredentialsAdapter(credential)).setApplicationName(APPLICATION_NAME).build();
+     */
+        logger.info("===>getGoogleDriveService 0");
+        ServiceAccountCredentials clientSecrets =
+                ServiceAccountCredentials.fromStream(GoogleDriveAuth.class.getResourceAsStream(SERVICE_ACCOUNT_JSON_PATH));
+        PrivateKey privateKey = clientSecrets.getPrivateKey();
+        String privateKeyId = clientSecrets.getPrivateKeyId();
+
+
+        logger.info("===> privateKeyId:" + privateKeyId);
+
+
+        ServiceAccountCredentials credentials =
+                ServiceAccountCredentials.newBuilder()
+                        .setPrivateKey(privateKey)
+                        .setPrivateKeyId(privateKeyId)
+                        .setScopes(SCOPES)
+                        .setClientEmail(SERVICE_ACCOUNT_EMANIL)
+                        .build();
+
+
+        logger.info("===> authorize ok");
+
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
+
+
+        return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer).setApplicationName(APPLICATION_NAME).build();
     }
 
 

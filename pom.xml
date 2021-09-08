@@ -117,7 +117,7 @@
         <filters>
             <filter>src/main/filters/${api.env}/DB.properties</filter>
             <filter>src/main/filters/${api.env}/application.yml</filter>
-            <filter>src/main/filters/${api.env}/dev-my-project-28585-1b0bbaf3db2f.json</filter>
+            <filter>src/main/filters/${api.env}/dev-my-project-28585-67d6a87e811f.json</filter>
 
 
         </filters>
@@ -335,20 +335,6 @@
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-drive</artifactId>
             <version>v3-rev197-1.25.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-java6 -->
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-java6</artifactId>
-            <version>1.32.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client-jetty -->
-        <dependency>
-            <groupId>com.google.oauth-client</groupId>
-            <artifactId>google-oauth-client-jetty</artifactId>
-            <version>1.32.1</version>
         </dependency>
 
 
