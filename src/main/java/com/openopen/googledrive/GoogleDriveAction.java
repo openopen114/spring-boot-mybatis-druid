@@ -181,9 +181,9 @@ public class GoogleDriveAction {
      * 上傳圖檔
      *
      * */
-    public void uploadImage(InputStream _fileInputStream,
-                            InputStream _fileInputStream2,
-                            MultipartFile _fileMetaData) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
+    public String uploadImage(InputStream _fileInputStream,
+                              InputStream _fileInputStream2,
+                              MultipartFile _fileMetaData) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
 
 
 
@@ -214,6 +214,7 @@ public class GoogleDriveAction {
 
         logger.info("===> originalImageRes Id on Google Drive: " + originalImageRes.getId());
 
+        return originalImageRes.getId();
 
     }
 

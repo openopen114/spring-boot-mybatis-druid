@@ -2,6 +2,7 @@ package com.openopen.controller;
 
 
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.openopen.googledrive.GoogleDriveAction;
@@ -11,6 +12,8 @@ import net.sf.jmimemagic.MagicMatchNotFoundException;
 import net.sf.jmimemagic.MagicParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,12 +87,13 @@ public class GoogleDriveController {
         GoogleDriveAction googleDriveAction = new GoogleDriveAction();
 
 
-        googleDriveAction.uploadImage(fileInputStream, fileInputStream2, fileMetaData);
+        String fileId = googleDriveAction.uploadImage(fileInputStream, fileInputStream2, fileMetaData);
 
 
         JsonObject obj = new JsonObject();
         obj.addProperty("ACTION", "uploadImage");
         obj.addProperty("RESULT", "OK");
+        obj.addProperty("FILE_ID", fileId);
 
         return new Gson().toJson(obj);
     }
@@ -113,24 +117,80 @@ public class GoogleDriveController {
         logger.info("getOriginalImage _id: " + _id);
 
 
+        // 取得 googleDriveService
+        Drive googleDriveService = GoogleDriveAuth.getGoogleDriveService();
+
+        return new StreamingResponseBody() {
+            @Override
+            public void writeTo(OutputStream outputStream) throws IOException {
+                googleDriveService.files().get(_id).executeMediaAndDownloadTo(outputStream);
+            }
+        };
+
+
+    }
+
+
+    /*
+     *
+     * 下載圖片
+     *
+     * */
+    // http://localhost:8080/api/google/drive/image/id/126kFN0UqLrTkys9vKfiKJ3vTj8wW-F6R
+
+
+    @RequestMapping(
+            value = "/dl/image/id/{_id}",
+            method = RequestMethod.GET,
+            produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @ResponseBody
+    public ResponseEntity<StreamingResponseBody> downloadOriginalImage(@PathVariable("_id") String _id) throws IOException, InterruptedException, ExecutionException {
+
+        logger.info("getOriginalImage _id: " + _id);
+
+        final String[] fileResult = {"", ""};
+
+
         CompletableFuture<StreamingResponseBody> future = CompletableFuture.supplyAsync(() -> {
             return new StreamingResponseBody() {
                 @Override
                 public void writeTo(OutputStream outputStream) throws IOException {
 
+                    // 取得 googleDriveService
                     Drive googleDriveService = GoogleDriveAuth.getGoogleDriveService();
 
+
+                    // 取得檔案 outputStream
+                    logger.info("取得檔案 outputStream  0");
                     googleDriveService.files().get(_id).executeMediaAndDownloadTo(outputStream);
 
                     outputStream.close();
+                    logger.info("取得檔案 outputStream  1");
+
+
+                    // 取得檔案名稱
+                    logger.info("取得檔案名稱 0");
+
+
+                    File fileInfo = googleDriveService.files().get(_id).setSupportsAllDrives(true).execute();
+                    fileResult[0] = fileInfo.getName();
+                    fileResult[1] = fileInfo.getMimeType();
+
+
+                    logger.info("==> filename:" + fileResult[0]);
+                    logger.info("==> getMimeType:" + fileResult[1]);
+                    logger.info("取得檔案名稱 1");
 
                 }
             };
 
         });
 
-
         StreamingResponseBody result = future.get();
-        return result;
+
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment;filename*=" + fileResult[0])
+                .body(result);
     }
 }
