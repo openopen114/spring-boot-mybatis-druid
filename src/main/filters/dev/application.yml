@@ -41,6 +41,13 @@ gcloud.sql.cloudSqlInstance: madou-goole-sheet-std-c19:asia-east1:my-tst-postgre
 google.service.account.email: dirvetest123@dev-my-project-28585.iam.gserviceaccount.com
 google.service.account.json.path: /dev-my-project-28585-67d6a87e811f.json
 google.drive.folder.id: 1nJG4JSalQFT4qnakIOTnEEgyM7lsczyw
+google.drive.teams.drive.id: 0AEnjMW6oO0e0Uk9PVA
+
+
+# 最大上傳檔案大小
+spring.servlet.multipart.max-file-size: 50MB
+spring.servlet.multipart.max-request-size: 50MB
+server.tomcat.max-swallow-size: -1
 
 
 
