@@ -123,8 +123,12 @@ public class GoogleDriveController {
         GoogleDriveAction googleDriveAction = new GoogleDriveAction();
 
 
-        googleDriveAction.uploadImage(fileInputStream, fileInputStream2, fileInputStream3, fileMetaData);
+//        googleDriveAction.uploadImage(fileInputStream, fileInputStream2, fileInputStream3, fileMetaData);
 
+        Drive googleDriveService = GoogleDriveAuth.getGoogleDriveService();
+        logger.info("=====> googleDriveAction createFile 0");
+        googleDriveAction.createFile("18OfsWiCtFpCpjrIiAHo8MMpvJvGYMh7S", fileInputStream, "p1.jpeg", "image/jpeg", googleDriveService);
+        logger.info("=====> googleDriveAction createFile 1");
         JsonObject obj = new JsonObject();
         obj.addProperty("ACTION", "uploadImage");
         obj.addProperty("RESULT", "OK");

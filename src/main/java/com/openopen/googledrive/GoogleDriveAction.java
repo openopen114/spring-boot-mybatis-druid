@@ -255,6 +255,9 @@ public class GoogleDriveAction {
 
         logger.info("===> originalImageRes Id on Google Drive: " + originalImageRes.getId());
         logger.info("===> thumbnailImageRes Id on Google Drive: " + thumbnailImageRes.getId());
+
+
+        //1qs-yDwt6CONHlt8VU9isGu8sbzO8lVDB
     }
 
 
