@@ -37,7 +37,13 @@ gcloud.sql.socketFactory: com.google.cloud.sql.postgres.SocketFactory
 gcloud.sql.cloudSqlInstance: madou-goole-sheet-std-c19:asia-east1:my-tst-postgres-002
 
 #Google Drive API
-google.service.account.email: my-google0drive-service@crypto-eon-324701.iam.gserviceaccount.com
-google.service.account.json.path: /crypto-eon-324701-4bffd884f77c.json
-google.drive.folder.id: 18NwRWjS-ybEnLuVo6tBUVkVvCqK4O5B7
+google.service.account.email: dirvetest123@dev-my-project-28585.iam.gserviceaccount.com
+google.service.account.json.path: /dev-my-project-28585-67d6a87e811f.json
+google.drive.folder.id: 18OfsWiCtFpCpjrIiAHo8MMpvJvGYMh7S
 google.drive.teams.drive.id: 0AEnjMW6oO0e0Uk9PVA
+
+
+# 最大上傳檔案大小
+spring.servlet.multipart.max-file-size: 50MB
+spring.servlet.multipart.max-request-size: 50MB
+server.tomcat.max-swallow-size: -1
