@@ -5,7 +5,6 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import lombok.Getter;
-import net.coobird.thumbnailator.Thumbnails;
 import net.sf.jmimemagic.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -17,10 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -188,76 +183,38 @@ public class GoogleDriveAction {
      * */
     public void uploadImage(InputStream _fileInputStream,
                             InputStream _fileInputStream2,
-                            InputStream _fileInputStream3,
                             MultipartFile _fileMetaData) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
 
-        // 取得 google Drive Service
+
+
+        /* ◢◤◢◤◢◤◢◤◢◤ 1. 取得 google Drive Service ◢◤◢◤◢◤◢◤◢◤ */
+        logger.info(" 1. 取得 google Drive Service 0");
         Drive googleDriveService = GoogleDriveAuth.getGoogleDriveService();
-
-        /* ◢◤◢◤◢◤◢◤◢◤ 1. 取得上傳圖檔資料夾 id map / 檢查上傳資料夾/縮圖資料夾是否存在 ◢◤◢◤◢◤◢◤◢◤ */
-        logger.info(" 1. 取得上傳圖檔資料夾 id map 0");
-        HashMap<String, String> folderIdMap = getImageFolderIdMap(googleDriveService);
-        String todayFolderId = folderIdMap.get("todayFolderId");
-        String thumbnailFolderId = folderIdMap.get("thumbnailFolderId");
-
-
-        logger.info(" 1. 取得上傳圖檔資料夾 id map 1");
+        logger.info(" 1. 取得 google Drive Service 1");
 
 
         /* ◢◤◢◤◢◤◢◤◢◤ 2. 取得檔案名稱, mime type ◢◤◢◤◢◤◢◤◢◤ */
         logger.info("2. 取得檔案名稱, mime type 0");
-        logger.info("===> _fileMetaData.getOriginalFilename():" + _fileMetaData.getOriginalFilename());
 
         // 完整檔案名稱 xxx.yyy
         String fullFileName = _fileMetaData.getOriginalFilename();
 
-        MagicMatch fileMatchResult = Magic.getMagicMatch(IOUtils.toByteArray(_fileInputStream3));
+        MagicMatch fileMatchResult = Magic.getMagicMatch(IOUtils.toByteArray(_fileInputStream2));
         String mimeType = fileMatchResult.getMimeType();
-        String fileExtension = fileMatchResult.getExtension();
         logger.info("===> mimeType:" + mimeType);
-        logger.info("===> fileExtension:" + fileExtension);
         logger.info("2. 取得檔案名稱, mime type 1");
 
 
-        /* ◢◤◢◤◢◤◢◤◢◤ 3. 大圖 ◢◤◢◤◢◤◢◤◢◤ */
-        String fileType = fullFileName.substring(fullFileName.lastIndexOf(".") + 1, fullFileName.length());
-
-        logger.info("===> 大圖 0 ");
-        BufferedImage buf = Thumbnails.of(_fileInputStream).size(1500, 1500).asBufferedImage();
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(buf, fileType, os);
-        InputStream largeInputStream = new ByteArrayInputStream(os.toByteArray());
-        logger.info("===> 大圖 1");
-
-
-        /* ◢◤◢◤◢◤◢◤◢◤ 4. 小圖 ◢◤◢◤◢◤◢◤◢◤ */
-
-        logger.info("===> 小圖 0 ");
-        //縮小相片
-        BufferedImage thumbnail_buf = Thumbnails.of(_fileInputStream2).size(150, 150).asBufferedImage();
-        ByteArrayOutputStream thumbnail_os = new ByteArrayOutputStream();
-        ImageIO.write(thumbnail_buf, fileType, thumbnail_os);
-        InputStream thumbnailInputStream = new ByteArrayInputStream(thumbnail_os.toByteArray());
-        logger.info("===> 小圖 1 ");
-
-
+        /* ◢◤◢◤◢◤◢◤◢◤ 3. 上傳 ◢◤◢◤◢◤◢◤◢◤ */
         // 原圖
         logger.info("===> 原圖  createFile 0 ");
-        File originalImageRes = this.createFile(todayFolderId, largeInputStream, fullFileName, mimeType, googleDriveService);
+        File originalImageRes = this.createFile(getGOOGLE_DRIVE_FOLDER_ID(), _fileInputStream, fullFileName, mimeType, googleDriveService);
         logger.info("===> 原圖  createFile 1 ");
-
-        // 縮圖
-
-        logger.info("===> 縮圖  createFile 0 ");
-        File thumbnailImageRes = this.createFile(thumbnailFolderId, thumbnailInputStream, fullFileName, mimeType, googleDriveService);
-        logger.info("===> 縮圖  createFile 1 ");
 
 
         logger.info("===> originalImageRes Id on Google Drive: " + originalImageRes.getId());
-        logger.info("===> thumbnailImageRes Id on Google Drive: " + thumbnailImageRes.getId());
 
 
-        //1qs-yDwt6CONHlt8VU9isGu8sbzO8lVDB
     }
 
 

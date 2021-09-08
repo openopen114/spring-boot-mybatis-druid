@@ -14,9 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 
 @RestController
@@ -37,47 +41,6 @@ public class GoogleDriveController {
 
         return "OK 123";
     }
-
-
-    /*
-     *
-     * 上傳圖片到 Google Drive
-     *
-     * */
-    //http://localhost:8080/api/google/drive/uploadImage
-    /*
-    @PostMapping(
-            value = "/uploadImage",
-            produces = {"application/json"})
-    @Transactional
-    public String uploadImage(@RequestParam("file") MultipartFile fileInput,
-                              @RequestParam("file") MultipartFile fileInput2,
-                              @RequestParam("file") MultipartFile fileInput3,
-                              @RequestParam("file") MultipartFile fileMetaData,
-                              @RequestParam("json") String _json) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
-        logger.info("===> uploadImage");
-        logger.info(_json);
-
-        InputStream fileInputStream = fileInput.getInputStream();
-        InputStream fileInputStream2 = fileInput2.getInputStream();
-        InputStream fileInputStream3 = fileInput3.getInputStream();
-
-
-//        Gson gson = new Gson();
-//        List<Person> list = gson.fromJson(_json, new TypeToken<List<Person>>() {
-//        }.getType());
-
-        GoogleDriveManager googleDriveManager = new GoogleDriveManager();
-
-
-        googleDriveManager.uploadImage(fileInputStream, fileInputStream2, fileInputStream3, fileMetaData);
-
-        JsonObject obj = new JsonObject();
-        obj.addProperty("ACTION", "uploadImage");
-        obj.addProperty("RESULT", "OK");
-
-        return new Gson().toJson(obj);
-    }*/
 
 
     @RequestMapping(
@@ -105,7 +68,6 @@ public class GoogleDriveController {
     @Transactional
     public String uploadImage(@RequestParam("file") MultipartFile fileInput,
                               @RequestParam("file") MultipartFile fileInput2,
-                              @RequestParam("file") MultipartFile fileInput3,
                               @RequestParam("file") MultipartFile fileMetaData,
                               @RequestParam("json") String _json) throws IOException, InterruptedException, MagicMatchNotFoundException, MagicException, MagicParseException {
         logger.info("===> uploadImage");
@@ -113,7 +75,6 @@ public class GoogleDriveController {
 
         InputStream fileInputStream = fileInput.getInputStream();
         InputStream fileInputStream2 = fileInput2.getInputStream();
-        InputStream fileInputStream3 = fileInput3.getInputStream();
 
 
 //        Gson gson = new Gson();
@@ -123,16 +84,50 @@ public class GoogleDriveController {
         GoogleDriveAction googleDriveAction = new GoogleDriveAction();
 
 
-//        googleDriveAction.uploadImage(fileInputStream, fileInputStream2, fileInputStream3, fileMetaData);
+        googleDriveAction.uploadImage(fileInputStream, fileInputStream2, fileMetaData);
 
-        Drive googleDriveService = GoogleDriveAuth.getGoogleDriveService();
-        logger.info("=====> googleDriveAction createFile 0");
-        googleDriveAction.createFile("18OfsWiCtFpCpjrIiAHo8MMpvJvGYMh7S", fileInputStream, "p1.jpeg", "image/jpeg", googleDriveService);
-        logger.info("=====> googleDriveAction createFile 1");
+
         JsonObject obj = new JsonObject();
         obj.addProperty("ACTION", "uploadImage");
         obj.addProperty("RESULT", "OK");
 
         return new Gson().toJson(obj);
+    }
+
+ 
+    /*
+     *
+     * 顯示圖片
+     *
+     * */
+    // http://localhost:8080/api/google/drive/image/id/126kFN0UqLrTkys9vKfiKJ3vTj8wW-F6R
+    @RequestMapping(
+            value = "/image/id/{_id}",
+            method = RequestMethod.GET,
+            produces = {"image/jpeg", "image/png"})
+    public StreamingResponseBody getOriginalImage(@PathVariable("_id") String _id) throws IOException, InterruptedException, ExecutionException {
+
+        logger.info("getOriginalImage _id: " + _id);
+
+
+        CompletableFuture<StreamingResponseBody> future = CompletableFuture.supplyAsync(() -> {
+            return new StreamingResponseBody() {
+                @Override
+                public void writeTo(OutputStream outputStream) throws IOException {
+
+                    Drive googleDriveService = GoogleDriveAuth.getGoogleDriveService();
+
+                    googleDriveService.files().get(_id).executeMediaAndDownloadTo(outputStream);
+
+                    outputStream.close();
+
+                }
+            };
+
+        });
+
+
+        StreamingResponseBody result = future.get();
+        return result;
     }
 }
