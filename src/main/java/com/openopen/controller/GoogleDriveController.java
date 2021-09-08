@@ -1,7 +1,9 @@
 package com.openopen.controller;
 
 
+import com.google.api.services.drive.Drive;
 import com.openopen.googledrive.GoogleDriveAction;
+import com.openopen.googledrive.GoogleDriveAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,4 +72,17 @@ public class GoogleDriveController {
 
         return new Gson().toJson(obj);
     }*/
+
+
+    @RequestMapping(
+            value = "/new/folder",
+            method = RequestMethod.GET)
+    public String newFolder() throws IOException, InterruptedException {
+
+        GoogleDriveAction googleDriveAction = new GoogleDriveAction();
+        Drive googleDriveService = GoogleDriveAuth.getGoogleDriveService();
+        googleDriveAction.createFolder("1nJG4JSalQFT4qnakIOTnEEgyM7lsczyw", "新資料夾 new 123", googleDriveService);
+
+        return "OK 123";
+    }
 }

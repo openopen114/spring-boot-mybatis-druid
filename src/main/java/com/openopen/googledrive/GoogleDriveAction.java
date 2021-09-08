@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class GoogleDriveAction {
@@ -88,6 +89,33 @@ public class GoogleDriveAction {
 
         return result;
 
+    }
+
+
+    /*
+     *
+     * 新增資料夾
+     *
+     *
+     * */
+    public File createFolder(String _parentId, String _folderName, Drive _googleDriveService) throws IOException {
+
+        logger.info("==> 新增資料夾:" + _folderName);
+        //File MetaData
+        File folderMetadata = new File();
+
+        folderMetadata.setName(_folderName);
+        folderMetadata.setMimeType("application/vnd.google-apps.folder");
+
+        if (_parentId != null && _parentId.length() > 0) {
+            folderMetadata.setParents(Arrays.asList(_parentId));
+        }
+ 
+        folderMetadata.setTeamDriveId("0AEnjMW6oO0e0Uk9PVA");
+
+
+        //新增資料夾並回傳 id
+        return _googleDriveService.files().create(folderMetadata).setSupportsAllDrives(true).setFields("id").execute();
     }
 
 }

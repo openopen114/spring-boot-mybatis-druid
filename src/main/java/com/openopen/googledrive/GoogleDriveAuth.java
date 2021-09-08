@@ -8,8 +8,6 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import com.google.auth.http.HttpCredentialsAdapter;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ImpersonatedCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -73,59 +71,16 @@ public class GoogleDriveAuth {
      *  授權驗證
      *
      * */
-    public static ImpersonatedCredentials authorize() throws IOException {
+    public static ServiceAccountCredentials authorize() throws IOException {
 
         logger.info("===> authorize");
         logger.info("===> SERVICE_ACCOUNT_EMANIL:" + SERVICE_ACCOUNT_EMANIL);
         logger.info("===> SERVICE_ACCOUNT_JSON_PATH:" + SERVICE_ACCOUNT_JSON_PATH);
-//
-//        ServiceAccountCredentials serviceAccountCredentials = ServiceAccountCredentials.fromStream(GoogleDriveAuth.class.getResourceAsStream(SERVICE_ACCOUNT_JSON_PATH));
-//
-//        serviceAccountCredentials = (ServiceAccountCredentials) serviceAccountCredentials.createScoped(SCOPES);
-//
-//
-//        ImpersonatedCredentials credential = ImpersonatedCredentials.create(serviceAccountCredentials, SERVICE_ACCOUNT_EMANIL, null, SCOPES,
-//                300);
 
-
-        logger.info("===> authorize");
-        logger.info("===> SERVICE_ACCOUNT_EMANIL:" + SERVICE_ACCOUNT_EMANIL);
-        logger.info("===> SERVICE_ACCOUNT_JSON_PATH:" + SERVICE_ACCOUNT_JSON_PATH);
-        GoogleCredentials clientSecrets =
-                GoogleCredentials.fromStream(GoogleDriveAuth.class.getResourceAsStream(SERVICE_ACCOUNT_JSON_PATH));
-
-
-//        GoogleCredentials credential = new GoogleCredentials(clientSecrets.getAccessToken())
-//
-//
-//                .setServiceAccountId(SERVICE_ACCOUNT_EMANIL)
-//                .setServiceAccountScopes(SCOPES)
-//                .build();
-
-        return null;
-    }
-
-
-    /*
-     *
-     *  取得google Drive Service
-     *
-     * */
-    public static Drive getGoogleDriveService() throws IOException {
-        /*
-        ImpersonatedCredentials credential = authorize();
-        logger.info("===> authorize ok");
-
-        return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpCredentialsAdapter(credential)).setApplicationName(APPLICATION_NAME).build();
-     */
-        logger.info("===>getGoogleDriveService 0");
         ServiceAccountCredentials clientSecrets =
                 ServiceAccountCredentials.fromStream(GoogleDriveAuth.class.getResourceAsStream(SERVICE_ACCOUNT_JSON_PATH));
         PrivateKey privateKey = clientSecrets.getPrivateKey();
         String privateKeyId = clientSecrets.getPrivateKeyId();
-
-
-        logger.info("===> privateKeyId:" + privateKeyId);
 
 
         ServiceAccountCredentials credentials =
@@ -136,11 +91,19 @@ public class GoogleDriveAuth {
                         .setClientEmail(SERVICE_ACCOUNT_EMANIL)
                         .build();
 
+        return credentials;
+    }
 
-        logger.info("===> authorize ok");
 
+    /*
+     *
+     *  取得google Drive Service
+     *
+     * */
+    public static Drive getGoogleDriveService() throws IOException {
+        ServiceAccountCredentials credentials = authorize();
         HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
-
+        logger.info("===> authorize ok");
 
         return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, requestInitializer).setApplicationName(APPLICATION_NAME).build();
     }
