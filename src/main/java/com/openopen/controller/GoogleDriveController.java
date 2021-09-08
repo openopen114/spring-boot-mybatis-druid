@@ -94,17 +94,20 @@ public class GoogleDriveController {
         return new Gson().toJson(obj);
     }
 
- 
+
     /*
      *
      * 顯示圖片
      *
      * */
     // http://localhost:8080/api/google/drive/image/id/126kFN0UqLrTkys9vKfiKJ3vTj8wW-F6R
+
+
     @RequestMapping(
             value = "/image/id/{_id}",
             method = RequestMethod.GET,
             produces = {"image/jpeg", "image/png"})
+    @ResponseBody
     public StreamingResponseBody getOriginalImage(@PathVariable("_id") String _id) throws IOException, InterruptedException, ExecutionException {
 
         logger.info("getOriginalImage _id: " + _id);
